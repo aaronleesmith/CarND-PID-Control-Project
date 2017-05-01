@@ -6,9 +6,10 @@ public:
   /*
   * Errors
   */
-  double p_error;
-  double i_error;
-  double d_error;
+  double p_error = 0.0;
+  double i_error = 0.0;
+  double d_error = 0.0;
+  double total_error = 0.0;
 
   /*
   * Coefficients
@@ -18,19 +19,19 @@ public:
   double Kd;
 
   /*
+   * Tracking
+   */
+  int number_of_steps = 0;
+
+  /*
   * Constructor
   */
-  PID();
+  PID(double Kp, double Ki, double Kd);
 
   /*
   * Destructor.
   */
   virtual ~PID();
-
-  /*
-  * Initialize PID.
-  */
-  void Init(double Kp, double Ki, double Kd);
 
   /*
   * Update the PID error variables given cross track error.
@@ -41,6 +42,11 @@ public:
   * Calculate the total PID error.
   */
   double TotalError();
+
+  /*
+   * Twiddle
+   */
+  void ParameterOptimization();
 };
 
 #endif /* PID_H */
