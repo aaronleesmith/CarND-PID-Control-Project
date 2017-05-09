@@ -1,6 +1,21 @@
 #ifndef PID_H
 #define PID_H
 
+#include <cmath>
+
+enum TWIDDLE_MODE {
+  WAIT,
+  COLLECT,
+  OPTIMIZE,
+  CHECK
+};
+
+enum TWIDDLE_PARAMETER {
+  P = 0,
+  I = 1,
+  D = 2
+};
+
 class PID {
 public:
   /*
@@ -19,14 +34,9 @@ public:
   double Kd;
 
   /*
-   * Tracking
-   */
-  int number_of_steps = 0;
-
-  /*
   * Constructor
   */
-  PID(double Kp, double Ki, double Kd);
+  PID(double Kp, double Ki, double Kd, int initial_iterations);
 
   /*
   * Destructor.
@@ -43,10 +53,40 @@ public:
   */
   double TotalError();
 
-  /*
-   * Twiddle
+
+private:
+  void ExecuteTwiddleIteration(double cte);
+
+  /**
+   * Number of iterations to wait before beginning optimizing.
    */
-  void ParameterOptimization();
+  int initial_iterations_;
+
+  int processed_iterations_ = 0;
+
+  double best_error_ = INFINITY;
+
+  /**
+   * Current mode.
+   */
+  TWIDDLE_MODE twiddle_mode_ = WAIT;
+
+  /**
+   * Current parameter
+   */
+  TWIDDLE_PARAMETER twiddle_parameter = P;
+
+  /**
+   * Change in P threshold.
+   */
+  double dp_threshold_ = 0.001;
+
+  /**
+   * Array to measure the change in P.
+   */
+  double dp_[3] = {0.0005, 0.00005, 0.015};
+
+  void GoToNextTwiddleParameter();
 };
 
 #endif /* PID_H */
