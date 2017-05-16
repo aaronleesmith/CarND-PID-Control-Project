@@ -3,6 +3,28 @@ Self-Driving Car Engineer Nanodegree Program
 
 ---
 
+## Reflections
+As part of the project, I am including reflections on my experience implementing the PID control here.
+
+### Describe the effect each of the P, I, D components had in your implementation.
+
+#### P
+Changing the proprotional tuning parameter (P) resulted in the system overcorrecting and making large, sweeping motions around the center line. This casued the system to quickly become unstable and drive off the road. A large CTE combined with a large value for <i>P</i> can create even higher CTE, causing oscillation and finally system divergence.
+
+#### I
+I set the integral tuning parameter to a high value at first to see what would happen. If this error is too high (say one order of magnitude too high) it can throw the whole system off very early. In order for this parameter to be effective, it needs to be correcting for cumulative error which is smoothed by many successive measurements. If the value is too high, it is too reactive to errors early on and overcorrects. 
+
+On the other hand, if I is set to a very low value (0, for example), the car ends up driving straight and then making abrupt corrections around turns. It can drive the track with my implementation, but it is decidedly less smooth. This is because the car does not adjust to minor errors and continues to be biased to straight lines, only correcting after the error in the turn starts to heavily negatively impact the system.
+
+#### D 
+Increating the derivative term an order of magintude tends to make the car very jerky and make abrupt corrections. A very small <i>D</i> causes the car to be very wobbly. I suspect this is because the derivative, which represents the slope of the error over time, helps to smooth the corrections. A small D means P is overinfluential to the correction and therefore overcorrects.
+
+
+### Describe how the final hyperparameters were chosen.
+I used a combination of guessing and checking and TWIDDLE. Initially, I attempted to hand-tune my parameters to get the car to drive. This got me in the realm I wanted to be in, with P, I, and D being set to 0.14, 0.001, and 3.0 initially. 
+
+To improve performance, I also use TWIDDLE to tune these parameters at drive time. Twiddle is implemented as part of the PID control, and nudges P, I, and D in very small values until a threshold is reached. Most of the success of the car is a results of the initial parameter settings, however.
+
 ## Dependencies
 
 * cmake >= 3.5

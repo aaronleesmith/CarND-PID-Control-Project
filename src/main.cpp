@@ -33,7 +33,7 @@ int main()
 {
   uWS::Hub h;
 
-  double tau_p = 0.15, tau_i = 0.001, tau_d = 3.0;
+  double tau_p = 0.14, tau_i = 0.001, tau_d = 3.0;
   PID pid = PID(tau_p, tau_i, tau_d, 100);
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
@@ -48,7 +48,7 @@ int main()
         std::string event = j[0].get<std::string>();
         if (event == "telemetry") {
           // j[1] is the data JSON object
-          double initial_throttle = .4;
+          double initial_throttle = .35;
           double cte = std::stod(j[1]["cte"].get<std::string>());
           double speed = std::stod(j[1]["speed"].get<std::string>()) / 100;
           double angle = std::stod(j[1]["steering_angle"].get<std::string>());
